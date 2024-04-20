@@ -1,0 +1,38 @@
+import { createGlobalStyle } from "styled-components";
+import reset from "styled-reset";
+
+export const GlobalStyle = createGlobalStyle`
+  ${reset}
+
+  #root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  :root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color: rgba(0, 0, 0, 0.9);
+    background: linear-gradient(
+    180deg,
+    #4568DC 0%,
+    #B06AB3 100%
+  );
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    display: flex;
+    min-width: 320px;
+    min-height: 100vh;
+  }
+`;
