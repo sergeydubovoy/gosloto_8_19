@@ -1,80 +1,53 @@
-import { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { FieldNames, MaxActiveNumbers, NumbersQuantity } from "./LotteryField";
+import { observer } from "mobx-react-lite";
+import { CountText } from "../shared/constants/constants";
+import { FieldStore } from "../store/FieldStore";
 
 interface FieldProps {
-  fieldName: FieldNames;
-  maxActiveNumbers: MaxActiveNumbers;
-  numbersQuantity: NumbersQuantity;
+  fieldStore: FieldStore;
+  handleNumberClick: (number: number) => void;
 }
 
-enum CountText {
-  allChecked = "Все числа отмечены",
-  letsCheck = "Отметьте",
-}
+export const Field: React.FC<FieldProps> = observer(
+  ({ fieldStore, handleNumberClick }) => {
+    const {
+      fieldName,
+      numbersQuantity,
+      fieldState,
+      remainingNumbers,
+      pluralize,
+    } = fieldStore;
 
-enum CountTextCases {
-  nominative = "число",
-  nominativePlural = "числа",
-  genitive = "чисел",
-}
+    const numbers = Array.from({ length: numbersQuantity }, (_, i) => i + 1);
 
-export const Field: React.FC<FieldProps> = ({
-  fieldName,
-  numbersQuantity,
-  maxActiveNumbers,
-}) => {
-  const numbers = Array.from({ length: numbersQuantity }, (_, i) => i + 1);
-  const [activeNumbers, setActiveNumbers] = useState<number[]>([]);
-
-  const handleNumberClick = (number: number) => {
-    return () => {
-      if (activeNumbers.length < maxActiveNumbers) {
-        setActiveNumbers((activeNumbers) => {
-          const newActiveNumbers = activeNumbers.includes(number)
-            ? activeNumbers.filter((num) => num !== number)
-            : [...activeNumbers, number];
-
-          return newActiveNumbers;
-        });
-      }
-    };
-  };
-
-  const remainingNumbers = maxActiveNumbers - activeNumbers.length;
-  const wordEnding =
-    remainingNumbers === 1
-      ? CountTextCases.nominative
-      : remainingNumbers < 5
-      ? CountTextCases.nominativePlural
-      : CountTextCases.genitive;
-
-  return (
-    <FieldWrapper>
-      <DescriptionWrapper>
-        <FieldName>{fieldName}</FieldName>
-        {remainingNumbers === 0 ? (
-          <p>{CountText.allChecked}</p>
-        ) : (
-          <p>
-            {CountText.letsCheck} {remainingNumbers} {wordEnding}
-          </p>
-        )}
-      </DescriptionWrapper>
-      <NumbersList>
-        {numbers.map((number) => (
-          <Number
-            key={number}
-            active={activeNumbers.includes(number)}
-            onClick={handleNumberClick(number)}
-          >
-            {number}
-          </Number>
-        ))}
-      </NumbersList>
-    </FieldWrapper>
-  );
-};
+    return (
+      <FieldWrapper>
+        <DescriptionWrapper>
+          <FieldName>{fieldName}</FieldName>
+          {remainingNumbers === 0 ? (
+            <p>{CountText.allChecked}</p>
+          ) : (
+            <p>
+              {CountText.letsCheck} {remainingNumbers} {pluralize}
+            </p>
+          )}
+        </DescriptionWrapper>
+        <NumbersList>
+          {numbers.map((number) => (
+            <Number
+              key={number}
+              active={fieldState.activeNumbers.includes(number)}
+              onClick={() => handleNumberClick(number)}
+            >
+              {number}
+            </Number>
+          ))}
+        </NumbersList>
+      </FieldWrapper>
+    );
+  }
+);
 
 const FieldWrapper = styled.div`
   margin: 0 auto;

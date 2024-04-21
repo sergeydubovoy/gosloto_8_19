@@ -1,10 +1,9 @@
 import styled from "styled-components";
+import { SHOW_RESULT_TEXT } from "../shared/constants/constants";
 
-const SHOW_RESULT_TEXT = "Показать результат";
-
-export const Button: React.FC = () => (
-  <StyledButton>{SHOW_RESULT_TEXT}</StyledButton>
-);
+export const ResultButton: React.FC<{ onClick: () => void }> = ({
+  onClick,
+}) => <StyledButton onClick={onClick}>{SHOW_RESULT_TEXT}</StyledButton>;
 
 const StyledButton = styled.button`
   padding: 10px 20px;
