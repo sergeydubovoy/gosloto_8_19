@@ -1,6 +1,10 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { CountText, CountTextCases } from "shared/constants/constants";
+import {
+  CountText,
+  CountTextCases,
+  FIELD_NAME,
+} from "shared/constants/constants";
 import { FieldStore } from "store/FieldStore";
 import styled from "styled-components";
 import { pluralize } from "utils/pluralize";
@@ -18,7 +22,9 @@ export const Fields: React.FC<IField> = observer(({ fieldStore }) => {
       {fieldStore.stateArr.map((field, index) => (
         <Field key={index}>
           <Description>
-            <FieldName>Поле {index + 1}</FieldName>
+            <FieldName>
+              {FIELD_NAME} {index + 1}
+            </FieldName>
             {fieldStore.getRemainingNumbers(index) === 0 ? (
               <p>{CountText.allChecked}</p>
             ) : (

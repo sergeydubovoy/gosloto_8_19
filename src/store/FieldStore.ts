@@ -81,10 +81,8 @@ export class FieldStore {
       ).length;
 
     if (sameNumbersInFirstField >= 4 || sameNumbersInBothFields >= 4) {
-      console.log("Успех");
       return true;
     } else {
-      console.log("Попробуйте еще раз");
       return false;
     }
   };
