@@ -8,4 +8,14 @@ export default defineConfig({
     outDir: "./docs",
     emptyOutDir: true,
   },
+  resolve: {
+    alias: {
+      api: "/src/api",
+      assets: "/src/assets",
+      components: "/src/components",
+      shared: "/src/shared",
+      store: "/src/store",
+      utils: "/src/utils",
+    },
+  },
 });

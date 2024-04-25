@@ -1,151 +1,121 @@
 import { makeAutoObservable } from "mobx";
-import {
-  FieldNames,
-  NumbersQuantity,
-  MaxActiveNumbers,
-  CountTextCases,
-} from "../shared/constants/constants";
-
-interface IFieldState {
-  activeNumbers: number[];
-}
+import { MaxActiveNumbers, NumbersQuantity } from "shared/constants/constants";
 
 export class FieldStore {
-  fieldName: FieldNames;
-  numbersQuantity: NumbersQuantity;
-  maxActiveNumbers: MaxActiveNumbers;
-  fieldState: IFieldState;
-  result: boolean;
+  stateArr: {
+    numbersQuantity: number;
+    maxActiveNumbers: number;
+    selectedNumbers: number[];
+    randomArray: number[];
+  }[];
 
-  constructor(
-    fieldName: FieldNames,
-    numbersQuantity: NumbersQuantity,
-    maxActiveNumbers: MaxActiveNumbers
-  ) {
-    this.fieldName = fieldName;
-    this.numbersQuantity = numbersQuantity;
-    this.maxActiveNumbers = maxActiveNumbers;
-    this.fieldState = { activeNumbers: [] };
-    this.result = false;
+  constructor() {
+    this.stateArr = [
+      {
+        numbersQuantity: NumbersQuantity.fieldOne,
+        maxActiveNumbers: MaxActiveNumbers.fieldOne,
+        selectedNumbers: [],
+        randomArray: [],
+      },
+      {
+        numbersQuantity: NumbersQuantity.fieldTwo,
+        maxActiveNumbers: MaxActiveNumbers.fieldTwo,
+        selectedNumbers: [],
+        randomArray: [],
+      },
+    ];
 
     makeAutoObservable(this);
   }
 
-  get remainingNumbers() {
-    return this.maxActiveNumbers - this.fieldState.activeNumbers.length;
-  }
+  getRemainingNumbers = (index: number) => {
+    return (
+      this.stateArr[index].maxActiveNumbers -
+      this.stateArr[index].selectedNumbers.length
+    );
+  };
 
-  // Эта версия короче, но не сработает, например, если 51 число.
+  toggleSelectedNumbers = (index: number, number: number) => {
+    const selectedNumbers = this.stateArr[index].selectedNumbers;
 
-  // get pluralize() {
-  //   const remainingNumbers = this.remainingNumbers;
-  //   return remainingNumbers === 1
-  //     ? CountTextCases.nominative
-  //     : remainingNumbers < 5
-  //     ? CountTextCases.nominativePlural
-  //     : CountTextCases.genitive;
-  // }
+    const indexInSelectedNumbers = selectedNumbers.indexOf(number);
 
-  // Эта версия универсальна, но длиннее
-  get pluralize() {
-    const remainingNumbers = this.remainingNumbers;
-    const lastDigit = remainingNumbers % 10;
-    const lastTwoDigits = remainingNumbers % 100;
-
-    if (lastTwoDigits > 10 && lastTwoDigits < 20) {
-      return CountTextCases.genitive;
+    if (indexInSelectedNumbers !== -1) {
+      selectedNumbers.splice(indexInSelectedNumbers, 1);
+    } else if (selectedNumbers.length < this.stateArr[index].maxActiveNumbers) {
+      selectedNumbers.push(number);
     }
+  };
 
-    if (lastDigit === 1) {
-      return CountTextCases.nominative;
-    }
-
-    if ([2, 3, 4].includes(lastDigit)) {
-      return CountTextCases.nominativePlural;
-    }
-
-    return CountTextCases.genitive;
-  }
-
-  handleNumberClick = (number: number) => {
-    const isNumberSelected = this.fieldState.activeNumbers.includes(number);
-    const activeNumbersLength = this.fieldState.activeNumbers.length;
-    const maxActiveNumbers = this.maxActiveNumbers;
-
-    if (isNumberSelected) {
-      const newActiveNumbers = this.fieldState.activeNumbers.filter(
-        (num) => num !== number
+  createRandomArrays = () => {
+    this.stateArr.forEach((_, index) => {
+      const randomArray = Array.from(
+        { length: this.stateArr[index].maxActiveNumbers },
+        () =>
+          Math.floor(Math.random() * this.stateArr[index].numbersQuantity) + 1
       );
-      this.fieldState = { activeNumbers: newActiveNumbers };
-    }
-
-    if (activeNumbersLength < maxActiveNumbers) {
-      const newActiveNumbers = [...this.fieldState.activeNumbers, number];
-      this.fieldState = { activeNumbers: newActiveNumbers };
-    }
+      this.stateArr[index].randomArray = randomArray;
+      console.log(randomArray);
+    });
   };
 
-  createRandomArrays = (): {
-    randomArray1: number[];
-    randomArray2: number[];
-  } => {
-    const randomArray1 = Array.from(
-      { length: MaxActiveNumbers.fieldOne },
-      () => Math.floor(Math.random() * NumbersQuantity.fieldOne) + 1
-    );
-    const randomArray2 = Array.from(
-      { length: MaxActiveNumbers.fieldTwo },
-      () => Math.floor(Math.random() * NumbersQuantity.fieldTwo) + 1
-    );
+  compareArrays = () => {
+    const firstField = this.stateArr[0];
+    const firstFieldSelectedNumbers = firstField.selectedNumbers;
+    const firstFieldRandomArray = firstField.randomArray;
 
-    return {
-      randomArray1,
-      randomArray2,
-    };
-  };
+    const secondField = this.stateArr[1];
+    const secondFieldSelectedNumbers = secondField.selectedNumbers;
+    const secondFieldRandomArray = secondField.randomArray;
 
-  compareArrays = (
-    randomArray1: number[],
-    randomArray2: number[],
-    selectedNumbers1: number[],
-    selectedNumbers2: number[]
-  ) => {
-    const matchingNumbers1 = selectedNumbers1.filter((num) =>
-      randomArray1.includes(num)
+    const sameNumbersInFirstField = firstFieldSelectedNumbers.filter((number) =>
+      firstFieldRandomArray.includes(number)
     ).length;
-    const matchingNumbers2 = selectedNumbers2.filter((num) =>
-      randomArray2.includes(num)
-    ).length;
-    const match =
-      matchingNumbers1 >= 4 || (matchingNumbers1 >= 3 && matchingNumbers2 >= 1);
 
-    this.result = match;
+    const sameNumbersInBothFields =
+      firstFieldSelectedNumbers.filter((number) =>
+        firstFieldRandomArray.includes(number)
+      ).length +
+      secondFieldSelectedNumbers.filter((number) =>
+        secondFieldRandomArray.includes(number)
+      ).length;
 
-    if (match) {
-      console.log("Поздравляем, вы выиграли!");
-      console.log(randomArray1, randomArray2);
-      console.log(selectedNumbers1, selectedNumbers2);
+    if (sameNumbersInFirstField >= 4 || sameNumbersInBothFields >= 4) {
+      console.log("Успех");
+      return true;
     } else {
-      console.log("Увы, попробуйте еще раз.");
+      console.log("Попробуйте еще раз");
+      return false;
     }
-    return match;
+  };
+
+  createTicketData = () => {
+    const ticketData = {
+      selectedNumbers: {
+        firstField: this.stateArr[0].selectedNumbers,
+        secondField: this.stateArr[1].selectedNumbers,
+      },
+      isTicketWon: this.compareArrays(),
+    };
+    return ticketData;
   };
 
   selectRandomNumbers = () => {
-    const { numbersQuantity, maxActiveNumbers } = this;
-
-    const selectedNumbers1 = Array.from(
-      { length: maxActiveNumbers },
-      () => Math.floor(Math.random() * numbersQuantity) + 1
-    );
-
-    const selectedNumbers2 = Array.from(
-      { length: maxActiveNumbers },
-      () => Math.floor(Math.random() * numbersQuantity) + 1
-    );
-
-    this.fieldState = { activeNumbers: selectedNumbers1 };
-    this.fieldState = { activeNumbers: selectedNumbers2 };
-    console.log("magic click");
+    this.stateArr.forEach((field, index) => {
+      const randomSelectedNumbers: number[] = [];
+      while (randomSelectedNumbers.length < field.maxActiveNumbers) {
+        const randomNum = Math.floor(Math.random() * field.numbersQuantity) + 1;
+        if (!randomSelectedNumbers.includes(randomNum)) {
+          randomSelectedNumbers.push(randomNum);
+        }
+      }
+      this.stateArr[index].selectedNumbers = randomSelectedNumbers;
+    });
   };
+
+  get isButtonDisabled(): boolean {
+    return this.stateArr.some(
+      (field) => field.selectedNumbers.length !== field.maxActiveNumbers
+    );
+  }
 }

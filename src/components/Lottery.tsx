@@ -1,70 +1,41 @@
-import styled from "styled-components";
-import { Field } from "./Field";
-import { ResultButton } from "./ResultButton";
+import { submitTicket } from "api/submitTicket";
 import { observer } from "mobx-react-lite";
-import {
-  FieldNames,
-  NumbersQuantity,
-  MaxActiveNumbers,
-  TIKET_NUMBER,
-} from "../shared/constants/constants";
-import { FieldStore } from "../store/FieldStore";
-import { MagicButton } from "./MagicButton";
+import { useState } from "react";
+import { ResultText, TIKET_NUMBER } from "shared/constants/constants";
+import { FieldStore } from "store/FieldStore";
+import styled from "styled-components";
+import { Fields } from "./Fields";
+import { RandomButton } from "./RandomButton";
+import { ResultButton } from "./ResultButton";
 
-const fieldStore1 = new FieldStore(
-  FieldNames.fieldOne,
-  NumbersQuantity.fieldOne,
-  MaxActiveNumbers.fieldOne
-);
-const fieldStore2 = new FieldStore(
-  FieldNames.fieldTwo,
-  NumbersQuantity.fieldTwo,
-  MaxActiveNumbers.fieldTwo
-);
+const fieldStore = new FieldStore();
 
 export const Lottery: React.FC = observer(() => {
-  let selectedNumbers1: number[] = [];
-  let selectedNumbers2: number[] = [];
+  const [result, setResult] = useState<null | boolean>(null);
 
-  const handleNumberClick1 = (number: number) => {
-    fieldStore1.handleNumberClick(number);
-    selectedNumbers1 = fieldStore1.fieldState.activeNumbers;
-  };
+  const handleMagicClick = () => fieldStore.selectRandomNumbers();
+  const handleResultClick = async () => {
+    fieldStore.createRandomArrays();
+    const lotteryResult = submitTicket(fieldStore.createTicketData());
 
-  const handleNumberClick2 = (number: number) => {
-    fieldStore2.handleNumberClick(number);
-    selectedNumbers2 = fieldStore2.fieldState.activeNumbers;
-  };
-
-  const handleButtonClick = () => {
-    const { randomArray1, randomArray2 } = fieldStore1.createRandomArrays();
-
-    fieldStore1.compareArrays(
-      randomArray1,
-      randomArray2,
-      selectedNumbers1,
-      selectedNumbers2
-    );
-    fieldStore2.compareArrays(
-      randomArray1,
-      randomArray2,
-      selectedNumbers1,
-      selectedNumbers2
-    );
-  };
-
-  const handleMagicClick = () => {
-    fieldStore1.selectRandomNumbers();
-    fieldStore2.selectRandomNumbers();
+    if ((await lotteryResult).isTicketWon) setResult(true);
+    else setResult(false);
   };
 
   return (
     <Wrapper>
-      <MagicButton onClick={handleMagicClick} />
+      <RandomButton onClick={handleMagicClick} />
       <TiketNumber>{TIKET_NUMBER}</TiketNumber>
-      <Field fieldStore={fieldStore1} handleNumberClick={handleNumberClick1} />
-      <Field fieldStore={fieldStore2} handleNumberClick={handleNumberClick2} />
-      <ResultButton onClick={handleButtonClick} />
+      <Fields fieldStore={fieldStore} />
+      <ResultButton
+        onClick={handleResultClick}
+        disabled={fieldStore.isButtonDisabled}
+      />
+      {result !== null && result ? (
+        <ResultMessage result={result}>{ResultText.win}</ResultMessage>
+      ) : result !== null && !result ? (
+        <ResultMessage result={result}>{ResultText.lose}</ResultMessage>
+      ) : null}
     </Wrapper>
   );
 });
@@ -87,4 +58,8 @@ const TiketNumber = styled.h1`
   font-size: 24px;
   font-weight: 700;
   text-align: left;
+`;
+
+const ResultMessage = styled.p<{ result: boolean }>`
+  color: ${(props) => (props.result === true ? "green" : "red")};
 `;
