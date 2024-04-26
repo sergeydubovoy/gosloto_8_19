@@ -16,6 +16,10 @@ export default defineConfig({
       shared: "/src/shared",
       store: "/src/store",
       utils: "/src/utils",
+      button: "/src/components/Button",
+      description: "/src/components/Description",
+      numbersList: "/src/components/NumbersList",
+      field: "/src/components/Field",
     },
   },
 });

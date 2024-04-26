@@ -20,7 +20,11 @@
       "components/*": ["components/*"],
       "shared/*": ["shared/*"],
       "store/*": ["store/*"],
-      "utils/*": ["utils/*"]
+      "utils/*": ["utils/*"],
+      "Button/*": ["components/Button/*"],
+      "Description/*": ["components/Description/*"],
+      "NumbersList/*": ["components/NumbersList/*"],
+      "Field/*": ["components/Field/*"]
     },
 
     /* Linting */

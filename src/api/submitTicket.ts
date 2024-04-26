@@ -13,12 +13,13 @@ const PROMISE_TIMEOUT: number = 2000;
 /** Максимальное количество попыток запроса к API */
 const RETRIES_API_REQUEST_COUNT: number = 2;
 
-const API_URL: string = "https://jsonplaceholder.typicode.com/posts";
-const CONTENT_TYPE_HEADER: string = "Content-type";
-const CONTENT_TYPE_VALUE: string = "application/json; charset=UTF-8";
 const ERROR_API_REQUESTS: string =
   "Не удалось отправить данные после нескольких попыток";
 const ERROR_STATUS: string = "Ошибка при отправке запроса: неверный код ответа";
+
+const API_URL: string = "https://jsonplaceholder.typicode.com/posts";
+const CONTENT_TYPE_HEADER: string = "Content-type";
+const CONTENT_TYPE_VALUE: string = "application/json; charset=UTF-8";
 
 const postTicket = async (data: {
   selectedNumbers: {

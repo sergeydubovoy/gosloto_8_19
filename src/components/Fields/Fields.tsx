@@ -1,6 +1,6 @@
+import { Field } from "components/Field/Field";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { Field } from "../Field/Field";
 import { IFields } from "./Fields.interfaces";
 import { Wrapper, handleNumberClick } from "./Fields.styles";
 
