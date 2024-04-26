@@ -20,7 +20,7 @@ const ERROR_API_REQUESTS: string =
   "Не удалось отправить данные после нескольких попыток";
 const ERROR_STATUS: string = "Ошибка при отправке запроса: неверный код ответа";
 
-const getTicket = async (data: {
+const postTicket = async (data: {
   selectedNumbers: {
     firstField: number[];
     secondField: number[];
@@ -51,7 +51,7 @@ export const submitTicket = async (data: {
 
   while (retries < RETRIES_API_REQUEST_COUNT) {
     try {
-      const ticket = await getTicket(data);
+      const ticket = await postTicket(data);
       return ticket;
     } catch (error) {
       retries++;

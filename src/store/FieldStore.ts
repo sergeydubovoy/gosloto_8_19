@@ -55,7 +55,6 @@ export class FieldStore {
           Math.floor(Math.random() * this.stateArr[index].numbersQuantity) + 1
       );
       this.stateArr[index].randomArray = randomArray;
-      console.log(randomArray);
     });
   };
 

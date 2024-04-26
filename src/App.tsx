@@ -1,11 +1,3 @@
-import { Lottery } from "./components/Lottery";
+import { Lottery } from "./components/Lottery/Lottery";
 
-function App() {
-  return (
-    <>
-      <Lottery />
-    </>
-  );
-}
-
-export default App;
+export const App = () => <Lottery />;
