@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import * as colors from "shared/styles/colors";
 
 export const StyledButton = styled.button<{ isRandomButton?: boolean }>`
   position: ${(props) => (props.isRandomButton ? "absolute" : "static")};
@@ -7,20 +8,22 @@ export const StyledButton = styled.button<{ isRandomButton?: boolean }>`
   height: ${(props) => (props.isRandomButton ? "40px" : "auto")};
   top: ${(props) => (props.isRandomButton ? "10px" : "")};
   right: ${(props) => (props.isRandomButton ? "10px" : "")};
-  border: 1px solid #dddddd;
+  border: ${`1px solid ${colors.borderColor}`};
   border-radius: ${(props) => (props.isRandomButton ? "50%" : "30px")};
   background: ${(props) =>
-    props.isRandomButton ? "rgba(140, 140, 140, 0.1)" : "transparent"};
+    props.isRandomButton
+      ? `${colors.buttonBackgroundColor}`
+      : `${colors.transparentColor}`};
   outline: none;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(250, 250, 50, 0.3);
+    background: ${colors.hoverColor};
   }
 
   &:active {
-    background: rgba(250, 250, 50, 1);
+    background: ${colors.activeColor};
   }
 
   ${(props) =>

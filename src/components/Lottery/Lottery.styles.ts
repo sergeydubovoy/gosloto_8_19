@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import * as colors from "shared/styles/colors";
 
 export const Wrapper = styled.div`
   position: relative;
@@ -9,7 +10,7 @@ export const Wrapper = styled.div`
   padding: 20px 20px 40px 20px;
   max-width: 600px;
   height: auto;
-  background: #fff;
+  background: ${colors.backgroundColor};
   border-radius: 14px;
 `;
 
@@ -21,5 +22,6 @@ export const TiketNumber = styled.h1`
 `;
 
 export const ResultMessage = styled.p<{ result: boolean }>`
-  color: ${(props) => (props.result === true ? "green" : "red")};
+  color: ${(props) =>
+    props.result === true ? colors.winColor : colors.loseColor};
 `;

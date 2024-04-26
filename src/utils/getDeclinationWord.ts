@@ -17,7 +17,7 @@ export const getDeclinationWord = (
   number: number,
   titles: string[]
 ): string => {
-  const cases = [
+  const cases: Cases[] = [
     Cases.two,
     Cases.zero,
     Cases.one,

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import * as colors from "shared/styles/colors";
 
 export const Wrapper = styled.ul`
   display: flex;
@@ -14,23 +15,25 @@ export const Number = styled.li<{ active: boolean }>`
   width: 60px;
   height: 60px;
   border: ${(props) =>
-    props.active ? "4px solid #ffffff" : "1px solid #dddddd"};
+    props.active
+      ? `4px solid ${colors.activeBorderColor}`
+      : `1px solid ${colors.borderColor}`};
   border-radius: ${(props) => (props.active ? "16px" : "8px")};
   background: ${(props) =>
-    props.active ? "rgba(250, 250, 50, 1)" : "transparent"};
+    props.active ? `${colors.activeColor}` : `${colors.transparentColor}`};
   cursor: pointer;
   box-sizing: border-box;
   transition: all 0.2s ease;
 
   &:hover {
     background: ${(props) =>
-      props.active ? "rgba(250, 250, 50, 1)" : "rgba(250, 250, 50, 0.3)"};
+      props.active ? `${colors.activeColor}` : `${colors.hoverColor}`};
   }
 
   &:active {
-    background: rgba(250, 250, 50, 1);
+    background: ${colors.activeColor};
     border-radius: 8px;
-    border: 4px solid #ffffff;
+    border: ${`4px solid ${colors.activeBorderColor}`};
   }
 
   @media (max-width: 768px) {
